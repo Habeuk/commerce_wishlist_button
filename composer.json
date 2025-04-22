@@ -1,0 +1,14 @@
+{
+    "name": "habeuk/commerce_wishlist_button",
+    "description": "Adds a wishlist button to product variations via a custom field formatter.",
+    "type": "drupal-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kouwa stephane",
+            "email": "kksasteph888@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

@@ -1,0 +1,8 @@
+<div class="wishlist-button-wrapper" data-variation-id="{{ entity_id }}">
+  <a href="{{ url('commerce_wishlist_button.add', {'commerce_product_variation': entity_id}) }}" 
+     class="commerce_wishlist_button--wishlist-button wishlist-button"
+     data-drupal-selector="wishlist-button-{{ entity_id }}">
+{{ settings.button_icon }} {{ settings.button_label }}
+  </a>
+  <div class="wishlist-button-status"></div>
+</div>

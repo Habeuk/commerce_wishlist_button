@@ -1,0 +1,23 @@
+<?php
+
+/**
+ *
+ * @file
+ * Empty module file for commerce_wishlist_button.
+ */
+
+// You can implement hooks here if needed in the future.
+
+/**
+ * Implements hook_theme().
+ */
+function commerce_wishlist_button_theme() {
+  $hooks['commerce_wishlist_button'] = [
+    'render element' => 'elements',
+    'preprocess functions' => [
+      'template_preprocess_commerce_wishlist_button'
+    ],
+    'file' => 'commerce_wishlist_button.theme.inc'
+  ];
+  return $hooks;
+}

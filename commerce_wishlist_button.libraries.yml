@@ -1,0 +1,7 @@
+button:
+  js:
+    js/button.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/drupal.ajax

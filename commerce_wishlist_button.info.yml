@@ -1,0 +1,8 @@
+name: Commerce Wishlist Button
+type: module
+description: 'Adds a wishlist button to product variations via a custom field formatter.'
+core_version_requirement: ^9.4 || ^10
+package: Commerce
+dependencies:
+  - commerce_wishlist:commerce_wishlist
+  - commerce_product:commerce_product

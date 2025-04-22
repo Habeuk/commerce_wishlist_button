@@ -1,0 +1,7 @@
+commerce_wishlist_button.add:
+  path: '/wishlist/add/{commerce_product_variation}'
+  defaults:
+    _controller: '\Drupal\commerce_wishlist_button\Controller\WishlistController::add'
+    _title: 'Add to Wishlist'
+  requirements:
+    _custom_access: '\Drupal\commerce_wishlist_button\Controller\WishlistController::access'
