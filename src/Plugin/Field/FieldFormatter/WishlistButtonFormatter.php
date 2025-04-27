@@ -57,7 +57,6 @@ class WishlistButtonFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
     $variation = $items->getEntity();
-    // dd($variation);
     if ($variation) {
       $user = \Drupal::currentUser();
       $config = \Drupal::config('commerce_wishlist.settings');
@@ -98,8 +97,8 @@ class WishlistButtonFormatter extends FormatterBase {
         if ($WishlistItems) {
           $datas['#attributes']['class'][] = 'add';
         }
-        $elements[] = $datas;
       }
+      $elements[] = $datas;
     }
     return $elements;
   }

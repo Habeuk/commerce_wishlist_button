@@ -78,7 +78,6 @@ class CommerceWishlistBlock extends WishlistBlock {
         ]
       ]
     ];
-    // dd($build);
     return $build;
   }
 }

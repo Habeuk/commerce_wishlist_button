@@ -15,6 +15,6 @@
 {% set classes = ['wishlist-button-block', count>0?'add':''] %}
 <div{{ attributes.addClass(classes) }}>
   <a class="wishlist-block__link" href="{{ url }}">
-    {% if count>0 %}<span class="wishlist-block__icone">{{- button_icon|raw -}}</span>{% endif %}<span class="wishlist-block__count">{{ count }}</span>
+    <span class="wishlist-block__icone">{{- button_icon|raw -}}</span>{% if count>0 %}<span class="wishlist-block__count">{{ count }}</span>{% endif %}
   </a>
 </div>
