@@ -11,6 +11,8 @@ use Drupal\commerce_product\Entity\ProductVariation;
 use Drupal\commerce_wishlist\WishlistProviderInterface;
 use Drupal\commerce_wishlist\WishlistManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Drupal\Component\Serialization\Json;
 
 class WishlistController extends ControllerBase {
   
@@ -47,34 +49,49 @@ class WishlistController extends ControllerBase {
     return AccessResult::allowedIfHasPermission($account, 'access wishlist');
   }
   
-  public function add(ProductVariation $commerce_product_variation) {
+  public function addRemove(ProductVariation $commerce_product_variation) {
     $response = new AjaxResponse();
     $config = $this->config('commerce_wishlist.settings');
     $wishlist_type = $config->get('default_type');
-    
+    $datas = [];
+    $user = \Drupal::currentUser();
     try {
       // Récupération/création de la wishlist
-      $wishlist = $this->wishlistProvider->getWishlist($wishlist_type) ?? $this->wishlistProvider->createWishlist($wishlist_type);
+      /**
+       *
+       * @var \Drupal\commerce_wishlist\Entity\Wishlist $wishlist
+       */
+      $wishlist = $this->wishlistProvider->getWishlist($wishlist_type, $user) ?? $this->wishlistProvider->createWishlist($wishlist_type, $user);
+      $WishlistItems = $this->entityTypeManager()->getStorage('commerce_wishlist_item')->loadByProperties(
+        [
+          'wishlist_id' => $wishlist->id(),
+          'purchasable_entity' => $commerce_product_variation->id()
+        ]);
+      if ($WishlistItems) {
+        $WishlistItem = reset($WishlistItems);
+        $message = $this->t('remove to Wishlist');
+        $this->wishlistManager->removeWishlistItem($wishlist, $WishlistItem, true);
+        $datas = [
+          'action' => 'remove'
+        ];
+      }
+      else {
+        $message = $this->t('add to Wishlist');
+        $this->wishlistManager->addEntity($wishlist, $commerce_product_variation);
+        $datas = [
+          'action' => 'add'
+        ];
+      }
       
-      // Ajout de la variation
-      $this->wishlistManager->addEntity($wishlist, $commerce_product_variation);
-      
-      // Mise à jour du bouton
-      $selector = '.wishlist-button-wrapper[data-variation-id="' . $commerce_product_variation->id() . '"]';
-      $response->addCommand(
-        new ReplaceCommand($selector, [
-          '#theme' => 'commerce_wishlist_button',
-          '#variation' => $commerce_product_variation,
-          '#settings' => [
-            'button_label' => $this->t('Added!')
-          ]
-        ]));
+      $response = new JsonResponse();
     }
     catch (\Exception $e) {
-      $this->getLogger('commerce_wishlist_button')->error($e->getMessage());
-      $response->addCommand(new ReplaceCommand($selector, $this->t('Error occurred')));
+      $message = $e->getMessage();
+      $this->getLogger('commerce_wishlist_button')->error($message);
     }
-    
+    $response->headers->set('Access-Control-Expose-Headers', "CustomStatusText");
+    $response->headers->set('CustomStatusText', $message);
+    $response->setContent(Json::encode($datas));
     return $response;
   }
 }

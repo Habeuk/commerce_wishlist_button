@@ -19,5 +19,15 @@ function commerce_wishlist_button_theme() {
     ],
     'file' => 'commerce_wishlist_button.theme.inc'
   ];
+  $hooks['commerce_wishlist_button_block'] = [
+    'variables' => [
+      'count' => NULL,
+      'button_icon' => '',
+      'wishlist_entity' => NULL,
+      'url' => NULL,
+      'attributes' => []
+    ]
+  ];
   return $hooks;
 }
+
