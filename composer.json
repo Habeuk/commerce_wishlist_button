@@ -10,5 +10,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+    	"drupal/commerce_wishlist": "^3.0@RC"
+    }
 }
