@@ -1,6 +1,6 @@
 {% if entity_id %}
 <div {{ attributes }}> 
-  <a href="{{ url('commerce_wishlist_button.add_remove', {'commerce_product_variation': entity_id}) }}" title="{{-settings.button_label-}}" class="commerce_wishlist_button--wishlist-button wishlist-button" data-drupal-selector="wishlist-button-{{ entity_id }}">
+  <a href="{{ url('commerce_wishlist_button.add_remove', {'commerce_product_variation': entity_id}) }}" title="{{-settings.button_label-}}" class="commerce-wishlist-button--wishlist-button wishlist-button" data-drupal-selector="wishlist-button-{{ entity_id }}">
     {{ settings.button_icon|raw }} <span class="label"> {{ settings.button_label }} </span>
   </a>  
 </div>
