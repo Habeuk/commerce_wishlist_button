@@ -5,3 +5,7 @@ commerce_wishlist_button.add_remove:
     _title: 'Add to Wishlist'
   requirements:
     _custom_access: '\Drupal\commerce_wishlist_button\Controller\WishlistController::access'
+  options:
+    parameters:
+      commerce_product_variation:
+        type: entity:commerce_product_variation 

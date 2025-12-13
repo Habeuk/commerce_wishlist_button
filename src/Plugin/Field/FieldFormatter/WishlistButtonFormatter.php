@@ -26,20 +26,20 @@ class WishlistButtonFormatter extends FormatterBase {
    * @var \Drupal\commerce_wishlist\WishlistProvider
    */
   protected $wishlistProvider;
-  
+
   /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-  
+
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, WishlistProviderInterface $wishlist_provider, EntityTypeManagerInterface $entityTypeManager) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
     $this->wishlistProvider = $wishlist_provider;
     $this->entityTypeManager = $entityTypeManager;
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -48,7 +48,7 @@ class WishlistButtonFormatter extends FormatterBase {
     return new static($plugin_id, $plugin_definition, $configuration['field_definition'], $configuration['settings'], $configuration['label'], $configuration['view_mode'], $configuration['third_party_settings'], $container->get(
       'commerce_wishlist.wishlist_provider'), $container->get('entity_type.manager'));
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -56,7 +56,17 @@ class WishlistButtonFormatter extends FormatterBase {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
-    $variation = $items->getEntity();
+    $entity = $items->getEntity();
+    $variation = NULL;
+    // Cas 1 : le champ est sur une variation
+    if ($entity->getEntityTypeId() === 'commerce_product_variation') {
+      $variation = $entity;
+    }
+    // Cas 2 : le champ est sur un produit
+    elseif ($entity->getEntityTypeId() === 'commerce_product') {
+      /** @var \Drupal\commerce_product\Entity\ProductInterface $entity */
+      $variation = $entity->getDefaultVariation();
+    }
     if ($variation) {
       $user = \Drupal::currentUser();
       $config = \Drupal::config('commerce_wishlist.settings');
@@ -102,15 +112,15 @@ class WishlistButtonFormatter extends FormatterBase {
     }
     return $elements;
   }
-  
+
   public static function defaultSettings() {
     return [
-      'button_label' => 'Add to Wishlist',
-      'button_icon' => '❤️',
+      'button_label' => t('Add to Wishlist'),
+      'button_icon' => '<svg width="3rem" height="3rem" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="#000000" fill="none"><path d="M9.06,25C7.68,17.3,12.78,10.63,20.73,10c7-.55,10.47,7.93,11.17,9.55a.13.13,0,0,0,.25,0c3.25-8.91,9.17-9.29,11.25-9.5C49,9.45,56.51,13.78,55,23.87c-2.16,14-23.12,29.81-23.12,29.81S11.79,40.05,9.06,25Z"/></svg>',
       'button_css_class' => 'wishlist-button'
     ] + parent::defaultSettings();
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -136,7 +146,7 @@ class WishlistButtonFormatter extends FormatterBase {
     ];
     return $elements + parent::settingsForm($form, $form_state);
   }
-  
+
   /**
    *
    * {@inheritdoc}
@@ -149,7 +159,16 @@ class WishlistButtonFormatter extends FormatterBase {
     $summary[] = $this->t('CSS classes: @button_css_class', [
       '@classes' => $this->getSetting('button_css_class')
     ]);
-    
+
     return $summary;
+  }
+
+  public static function isApplicable(FieldDefinitionInterface $field_definition) {
+    // Autoriser uniquement les champs entity_reference
+    if ($field_definition->getType() !== 'entity_reference') {
+      return FALSE;
+    }
+    // Autoriser uniquement les références vers les variations
+    return $field_definition->getSetting('target_type') === 'commerce_product_variation';
   }
 }
