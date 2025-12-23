@@ -1,7 +1,7 @@
 (function(Drupal) {
 	Drupal.behaviors.commerceWishlistButton = {
 		attach(context) {
-			const buttons = once('wishlist-button', '.commerce_wishlist_button--wishlist-button', context);
+			const buttons = once('wishlist-button', '.commerce-wishlist-button--wishlist-button', context);
 			buttons.forEach((button) => {
 				button.addEventListener('click', function(e) {
 					e.preventDefault();
